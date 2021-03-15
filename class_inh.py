@@ -19,7 +19,7 @@ class Student:
         self.upd_avg()
         courses_in_progress = ', '.join(self.courses_in_progress)
         finished_courses = ', '.join(self.finished_courses)
-        return f'Имя: {self.name} \n Фамилия: {self.surname} \nСредние оценки за домашние задания: {avg_grade} \nКурсы в процессе изучения: {courses_in_progress} \nЗавершенные курсы: {finished_courses}'
+        return f'Имя: {self.name} \n Фамилия: {self.surname} \nСредние оценки за домашние задания: {self.avg_grade} \nКурсы в процессе изучения: {courses_in_progress} \nЗавершенные курсы: {finished_courses}'
 
     def rate_lecture(self, lecturer, course, grade):
         if isinstance(lecturer, Lecturer) and course in self.courses_in_progress and course in lecturer.courses_attached:
@@ -102,8 +102,16 @@ class Reviewer(Mentor):
         else:
             return 'Ошибка'
 
-best_student = Student('Ruoy', 'Eman', 'your_gender')
-best_student.courses_in_progress += ['Python']
+def avg_course(student_list, course):
+    course_grades= []
+    for student in student_list:
+        if isinstance(student, Student) and course in student.grades:
+            list_temp = student.grades.get(course)
+            course_grades.extend(list_temp)
+    return sum(course_grades) / len(course_grades)
+
+cool_student = Student('Ruoy', 'Eman', 'your_gender')
+cool_student.courses_in_progress += ['Python']
 
 meh_student = Student('Fikus', 'Pikus', 'helicopter')
 meh_student.courses_in_progress += ['JavaScript']
@@ -111,34 +119,38 @@ meh_student.courses_in_progress += ['JavaScript']
 cool_reviewer = Reviewer('Some', 'Buddy')
 cool_reviewer.courses_attached += ['Python']
  
-cool_reviewer.rate_hw(best_student, 'Python', 10)
-cool_reviewer.rate_hw(best_student, 'Python', 10)
-cool_reviewer.rate_hw(best_student, 'Python', 10)
-
 meh_reviewer = Reviewer('Another', 'Buddy')
 meh_reviewer.courses_attached += ['JavaScript']
-
-meh_reviewer.rate_hw(meh_student, 'JavaScript', 7)
-meh_reviewer.rate_hw(meh_student, 'JavaScript', 7)
-meh_reviewer.rate_hw(meh_student, 'JavaScript', 7)
-
-print(best_student.grades)
 
 cool_lecturer = Lecturer('Another', 'Buddy')
 cool_lecturer.courses_attached += ['Python']
 
-cooler_lecturer = Lecturer('The other', 'Buddy')
-cooler_lecturer.courses_attached += ['JavaScript']
- 
-best_student.rate_lecture(cool_lecturer, 'Python', 9.9)
-best_student.rate_lecture(cool_lecturer, 'Python', 9.9)
-best_student.rate_lecture(cool_lecturer, 'Python', 9.9)
+meh_lecturer = Lecturer('The other', 'Buddy')
+meh_lecturer.courses_attached += ['JavaScript']
 
-meh_student.rate_lecture(cooler_lecturer, 'JavaScript', 9.9)
-meh_student.rate_lecture(cooler_lecturer, 'JavaScript', 9.9)
-meh_student.rate_lecture(cooler_lecturer, 'JavaScript', 9.9)
+cool_reviewer.rate_hw(cool_student, 'Python', 10)
+cool_reviewer.rate_hw(cool_student, 'Python', 10)
+cool_reviewer.rate_hw(cool_student, 'Python', 10)
+
+meh_reviewer.rate_hw(meh_student, 'JavaScript', 7)
+meh_reviewer.rate_hw(meh_student, 'JavaScript', 7)
+meh_reviewer.rate_hw(meh_student, 'JavaScript', 7)
+
+cool_student.rate_lecture(cool_lecturer, 'Python', 9.9)
+cool_student.rate_lecture(cool_lecturer, 'Python', 9.9)
+cool_student.rate_lecture(cool_lecturer, 'Python', 9.9)
+
+meh_student.rate_lecture(meh_lecturer, 'JavaScript', 9.9)
+meh_student.rate_lecture(meh_lecturer, 'JavaScript', 9.9)
+meh_student.rate_lecture(meh_lecturer, 'JavaScript', 9.9)
 
 print(cool_lecturer.lecture_grades)
-print(cool_lecturer)
-print(cool_lecturer > cooler_lecturer)
-print(meh_student == best_student)
+print(meh_student.grades)
+print(meh_lecturer)
+print(cool_student)
+print(cool_lecturer > meh_lecturer)
+print(meh_student == cool_student)
+
+student_list = [cool_student, meh_student]
+course = 'Python'
+print(avg_course(student_list, course))
